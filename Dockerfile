@@ -30,11 +30,16 @@ RUN apk update && \
         wget \
         xz
 
+# Add our patch file
+ADD 001-reproducible.patch /tmp/
+
 # Build/install crosstool-ng
 RUN cd /root && \
     git clone https://github.com/crosstool-ng/crosstool-ng.git && \
     cd crosstool-ng && \
     git checkout 434c205e89f9d4e06d0210ae8504fb6a88a11d00 && \
+    patch -p1 < /tmp/001-reproducible.patch && \
+    rm /tmp/001-reproducible.patch && \
     ./bootstrap && \
     ./configure --prefix=/usr && \
     make && \
